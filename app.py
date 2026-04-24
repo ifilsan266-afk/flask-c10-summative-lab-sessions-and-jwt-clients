@@ -14,7 +14,7 @@ db.init_app(app)
 bcrypt.init_app(app)
 migrate = Migrate(app, db)
 
-# register blueprints (clean structure)
+# register blueprints 
 app.register_blueprint(auth_bp, url_prefix="/auth")
 app.register_blueprint(notes_bp, url_prefix="/api")
 

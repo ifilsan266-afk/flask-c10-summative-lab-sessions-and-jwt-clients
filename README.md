@@ -1,51 +1,84 @@
 # Flask Notes API
 
-This is a simple Flask project that lets users register, log in, and manage notes.  
-Each user can only see and manage their own notes.
+## Description
 
----
+This is a Flask REST API that allows users to register, log in, and manage personal notes. Each user can only access their own notes. The project demonstrates authentication, authorization, and full CRUD operations.
 
-## What this project does
+## Features
 
-- Users can create accounts (sign up)
-- Users can log in and log out
-- Users can create notes
-- Users can view their notes
-- Users can update notes
-- Users can delete notes
-- All notes are protected (only logged-in users can access them)
-- Data is stored in a database using SQLAlchemy
+- User registration and login
+- Session-based authentication
+- Password hashing using Flask-Bcrypt
+- Create, read, update, and delete notes
+- Protected routes (users can only access their own notes)
+- Pagination for notes
 
----
-
-## Technologies used
+## Technologies Used
 
 - Python
 - Flask
-- SQLAlchemy (database)
-- Flask-Bcrypt (password hashing)
-- Flask-Migrate (database migrations)
-- Marshmallow (data formatting/serialization)
-
----
+- Flask-SQLAlchemy
+- Flask-Bcrypt
+- Flask-Migrate
+- Marshmallow
 
 ## Project Structure
 
-- app.py → Main file that runs the app
-- config.py → App settings (database, secret key)
-- models.py → Database tables (User and Note)
-- schemas.py → Formats data for responses
-- extensions.py → Sets up database and password tools
-- routes/auth.py → Login and signup routes
-- routes/notes.py → CRUD routes for notes
-- seed.py → Adds sample data to the database
+- app.py: Main application entry point
+- config.py: Configuration settings
+- models.py: Database models (User, Note)
+- schemas.py: Marshmallow schemas
+- extensions.py: Database and bcrypt initialization
+- routes/auth.py: Authentication routes
+- routes/notes.py: Notes CRUD routes
+- seed.py: Database seeding script
 
----
+## Setup Instructions
 
-## How to run the project
-
-### 1. Create a virtual environment
-
-```bash
+git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
+cd YOUR_REPO
 python -m venv venv
 source venv/bin/activate
+pip install -r requirements.txt
+
+Create a .env file with:
+SECRET_KEY=dev-secret-key
+DATABASE_URL=sqlite:///app.db
+
+flask db init
+flask db migrate -m "initial migration"
+flask db upgrade
+
+python seed.py
+
+flask run
+
+## API Endpoints
+
+Authentication:
+POST /auth/signup
+POST /auth/login
+POST /auth/logout
+GET /auth/me
+
+Notes (Protected):
+GET /api/notes
+POST /api/notes
+GET /api/notes/<id>
+PATCH /api/notes/<id>
+DELETE /api/notes/<id>
+
+## Pagination
+
+/api/notes?page=1
+Default limit is 5 notes per page
+
+## Status Codes
+
+200 Success
+201 Created
+204 No content
+400 Bad request
+401 Unauthorized
+403 Forbidden
+404 Not found
