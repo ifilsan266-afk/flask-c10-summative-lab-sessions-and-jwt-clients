@@ -1,31 +1,27 @@
 from flask import Flask
-from config import Config
-from extensions import db, bcrypt
 from flask_migrate import Migrate
+from models import db, bcrypt
+from auth import auth_bp
+from notes import notes_bp
 
-from routes.auth import auth_bp
-from routes.notes import notes_bp
 
-app = Flask(__name__)
-app.config.from_object(Config)
+def create_app():
+    app = Flask(__name__)
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///productivity.db"
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["SECRET_KEY"] = "super-secret-key-change-in-production"
 
-# initialize extensions
-db.init_app(app)
-bcrypt.init_app(app)
-migrate = Migrate(app, db)
+    db.init_app(app)
+    bcrypt.init_app(app)
+    Migrate(app, db)
 
-# register blueprints 
-app.register_blueprint(auth_bp, url_prefix="/auth")
-app.register_blueprint(notes_bp, url_prefix="/api")
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(notes_bp)
 
-# health check route
-@app.route("/")
-def home():
-    return {
-        "message": "API is running",
-        "status": "success"
-    }, 200
+    return app
 
+
+app = create_app()
 
 if __name__ == "__main__":
     app.run(debug=True)
